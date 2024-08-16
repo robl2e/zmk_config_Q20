@@ -28,11 +28,93 @@
         };
     };
     behaviors {
+        SYML: tap_dance_1 {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <500>;
+            bindings = <&sl SYM>, <&tog SYM>;
+        };
+    };
+    behaviors {
+        UPPERL: tap_dance_2 {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <500>;
+            bindings = <&sl UPPER>, <&tog UPPER>;
+        };
+    };
+    behaviors {
         hm: homerow_mods {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             tapping-term-ms = <500>;
             bindings = <&out &kp>;
+        };
+    };
+    // Credit: Drexel Macintosh
+    behaviors {
+      tap: tap {
+        compatible = "zmk,behavior-macro-one-param";
+        #binding-cells = <1>;
+        // By default, macros will tap each behavior in the bindings list,
+        // so this will tap "&kp <param1>".
+        bindings = <&macro_param_1to1 &kp MACRO_PLACEHOLDER>;
+      };
+
+      // &mt where held key does not repeat
+      mtt: mod_tap_tap {
+        compatible = "zmk,behavior-hold-tap";
+        #binding-cells = <2>;
+        flavor = "tap-preferred";
+        tapping-term-ms = <250>;
+        quick-tap-ms = <200>;
+        require-prior-idle-ms = <125>;
+        bindings = <&tap>, <&tap>;
+      };
+    };
+    combos {
+        compatible = "zmk,combos";
+        combo_m_left_clk {
+            timeout-ms = <100>;
+            key-positions = <0 3>; // Shoulder1 + BBKey
+            bindings = <&mkp LCLK>;
+            layers = <0>;
+        };
+        combo_m_right_clk {
+            timeout-ms = <100>;
+            key-positions = <1 4>; // Shoulder2 + Trackpad
+            bindings = <&mkp RCLK>;
+            layers = <0>;
+        };
+        combo_m_middle_clk {
+            timeout-ms = <100>;
+            key-positions = <1 3>; // Shoulder2 + BBKey
+            bindings = <&mkp MCLK>;
+            layers = <0>;
+        };
+        combo_left {
+            timeout-ms = <100>;
+            key-positions = <0 2>; // Shoulder1 + CallKey
+            bindings = <&kp LEFT>;
+            layers = <0>;
+        };
+        combo_right {
+            timeout-ms = <100>;
+            key-positions = <1 6>; // Shoulder2 + EndCall
+            bindings = <&kp RIGHT>;
+            layers = <0>;
+        };
+        combo_up {
+            timeout-ms = <100>;
+            key-positions = <0 39>; // Shoulder1 + Space
+            bindings = <&kp UP>;
+            layers = <0>;
+        };
+        combo_down {
+            timeout-ms = <100>;
+            key-positions = <1 39>; // Shoulder2 + Space
+            bindings = <&kp DOWN>;
+            layers = <0>;
         };
     };
 
@@ -51,12 +133,12 @@
 //        |         aA     |         0           |           SPACE              |         SYM         |        aA          |       
 //        -----------------------------------------------------------------------------------------------------------------
 
-                 &mkp LCLK                                                                                          &mkp RCLK
-    &kp CLCK                &kp LGUI                            &mkp LCLK                          &mt ESC K_BACK                    &kp TAB
-    &kp Q        &kp W      &kp E       &kp R     &kp T         &kp Y             &kp U            &kp I            &kp O            &kp P
-    &kp A        &kp S      &kp D       &kp F     &kp G         &kp H             &kp J            &kp K            &kp L            &kp BSPC
-    &kp LSHFT    &kp Z      &kp X       &kp C     &kp V         &kp B             &kp N            &kp M            &kp SEMI         &kp ENTER
-    &kp LCTRL               &kp LALT                            &kp SPACE                          &tog SYM                          &tog UPPER
+                 &msc SCRL_UP                                                                                          &msc SCRL_DOWN
+    &mtt ESC CLCK                &kp LGUI                            &mkp LCLK                          &mt C_AC_HOME K_BACK                    &kp TAB
+    &mtt HASH Q        &mtt N1 W      &mtt N2 E       &mtt N3 R     &mtt LPAR T         &mtt RPAR Y             &mtt UNDER U            &mtt MINUS I            &mtt PLUS O            &mtt AT P
+    &mtt STAR A        &mtt N4 S      &mtt N5 D       &mtt N6 F     &mtt SLASH G         &mtt COLON H             &mtt SEMI J            &mtt APOS K            &mtt DQT L            &kp BSPC
+    &sk LSHFT    &mtt N7 Z      &mtt N8 X       &mtt N9 C     &mtt QMARK V         &mtt EXCL B             &mtt COMMA N            &mtt DOT M            &mtt DLLR N0         &kp ENTER
+    &sk LCTRL               &sk LALT                            &kp SPACE                          &SYML                          &UPPERL
             >;
         };
 
@@ -69,19 +151,19 @@
     &kp HASH     &kp N1     &kp N2      &kp N3    &mt LBKT LPAR &mt RBKT RPAR     &kp UNDER        &kp MINUS        &kp PLUS         &kp AT
     &kp STAR     &kp N4     &kp N5      &kp N6    &kp SLASH     &kp COLON         &kp SEMI         &kp APOS         &kp DQT          &kp DEL
     &kp LSHFT    &kp N7     &kp N8      &kp N9    &kp QMARK     &kp EXCL          &kp COMMA        &kp DOT          &kp C_MUTE       &kp ENTER
-    &kp LCTRL               &kp N0                              &kp SPACE                          &tog SYM                          &tog UPPER
+    &kp LCTRL               &kp N0                              &kp SPACE                          &SYML                          &UPPERL
             >;
         };
 
         upper_layer {
 
             bindings = <
-                 &msc SCRL_UP                                                                                       &msc SCRL_DOWN
-    &bt BT_SEL 0            &bt BT_SEL 1                             &td0                           &bt BT_SEL 2                     &bt BT_SEL 3
-    &none        &kp UP     &none       &sys_reset &ext_power EP_TOG &none         &kp LT           &kp GT          &kp PIPE         &kp KP_EQUAL
+                 &msc SCRL_LEFT                                                                                       &msc SCRL_RIGHT
+    &bt BT_SEL 0            &bt BT_SEL 1                             &mkp LCLK                           &bt BT_SEL 2                     &bt BT_SEL 3
+    &none        &kp UP     &none       &sys_reset &ext_power EP_TOG &mkp RCLK     &kp LT           &kp GT          &kp PIPE         &kp KP_EQUAL
     &kp LEFT     &kp DOWN   &kp RIGHT   &none      &kp BSLH          &kp AMPS      &kp LBRC         &kp RBRC        &kp CARET        &kp BSPC
-    &kp LSHFT    &none      &none       &none      &bl BL_DEC        &bl BL_TOG    &bl BL_INC       &none           &bootloader      &kp ENTER
-    &kp LCTRL               &kp LALT                                 &hm OUT_TOG SPACE              &tog SYM                         &tog UPPER
+    &kp LSHFT    &none      &none       &td0      &bl BL_DEC        &bl BL_TOG    &bl BL_INC       &none           &bootloader      &kp ENTER
+    &kp LCTRL               &kp LALT                                 &hm OUT_TOG SPACE              &SYML                         &UPPERL
             >;
         };
     };
